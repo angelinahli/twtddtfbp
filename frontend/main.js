@@ -15,7 +15,7 @@ function getRawTweets() {
 /**** data cleaning functions ****/
 
 function getCleanedData() {
-    allData = [];
+    allData = {};
     tweets = getRawTweets();
 
     for (const i in tweets) {
@@ -25,15 +25,15 @@ function getCleanedData() {
 
         tweetData = {
             cleanDate: date,
+            tweetUrl: "https://twitter.com/meganamram/status/" + tweet["tweet_id"],
             likes: tweet["likes"],
             retweets: tweet["retweets"],
             logLikes: Math.log(tweet["likes"]),
             logRTs: Math.log(tweet["retweets"])
         }
 
-        allData.push(tweetData);
+        allData[date] = tweetData;
     }
-    allData.sort(function(o1, o2) {return o1["cleanDate"] > o2["cleanDate"]});
     return allData;
 }
 
@@ -75,8 +75,8 @@ function addTimeChart() {
         "name": "Log RTs"
     };    
 
-    for(const i in tweets) {
-        tweet = tweets[i];
+    for(const dt in tweets) {
+        tweet = tweets[dt];
 
         likesTrace.x.push(tweet["cleanDate"]);
         likesTrace.y.push(tweet["logLikes"]);
@@ -109,15 +109,18 @@ function addTimeChart() {
 }
 
 function handlePlotlyClick(eventData) {
-    x = eventData.points[0].x;
-    dateString = getDateString(new Date(x));
-    events = wiki[dateString];
-
-    if(typeof events === "undefined" || !events[0]) {
-        events = [];
+    date = new Date(eventData.points[0].x);
+    dateString = getDateString(date);
+    data = {
+        dateString: dateString,
+        tweetUrl: tweets[date.toString()]["tweetUrl"],
+        events: wiki[dateString]
+    };
+    if(typeof data["events"] === "undefined" || !data["events"][0]) {
+        data["events"] = [];
     }
 
-    $("#timeChartSubtitle").html(Mustache.render(subtitleTemplate, {dateString: dateString, events: events}));
+    $("#timeChartSubtitle").html(Mustache.render(subtitleTemplate, data));
 }
 
 addTimeChart();

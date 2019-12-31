@@ -27,7 +27,7 @@
 
         <!-- title section -->
         <div class="text-center">
-        <h1>Today was the day Donald trump finally became president</h1>
+        <h2>Today was the day Donald trump finally became president</h2>
         <a href="https://twitter.com/meganamram" data-toggle="tooltip" title="Today was the day Donald trump finally became president"><img src="img/meganamram.png" class="img-fluid" alt="Today was the day Donald trump finally became president"></a>
         </div>
 
@@ -49,6 +49,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.js"></script>
 
     <script id="subtitleEventsTemplate" type="x-tmpl-mustache">
+        <a href="{{ tweetUrl }}" target="_blank"><p>Link to tweet</p></a>
         <h5>Events happening on {{ dateString }}:</h5>
 
         {{ #events.length }}
