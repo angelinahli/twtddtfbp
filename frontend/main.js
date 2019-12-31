@@ -49,9 +49,11 @@ function getZeroPaddedNum(num) {
 
 /**** constants ****/
 
-tweets = getCleanedData();
-plotlyFont = { "family": "Open Sans", "color": "#555555" };
-plotlyColorway = [];
+var tweets = getCleanedData();
+var plotlyFont = { "family": "Open Sans", "color": "#555555" };
+
+var subtitleTemplate = $("#subtitleEventsTemplate").html();
+Mustache.parse(subtitleTemplate);
 
 /**** main functionality ****/
 
@@ -111,21 +113,11 @@ function handlePlotlyClick(eventData) {
     dateString = getDateString(new Date(x));
     events = wiki[dateString];
 
-    subtitle = document.getElementById("timeChartSubtitle");
-    subtitle.innerHTML = "<h5>Events happening on " + dateString + ":</h5>";
-
     if(typeof events === "undefined" || !events[0]) {
-        subtitle.innerHTML += "<p>¯\\_(ツ)_/¯</p>";
-    } else {
-        subtitle.innerHTML += "<ul class='list-group'>";
-        for(const i in events) {
-            event = events[i];
-            subtitle.innerHTML += "<li class='list-group-item'>" + event + "</li>";
-        }
-        subtitle.innerHTML += "</ul>";
+        events = [];
     }
 
-    subtitle.innerHTML += "<p>Powered by <a href='https://en.wikipedia.org/wiki/Timeline_of_the_Donald_Trump_presidency'>Wikipedia</a>.</p>";
+    $("#timeChartSubtitle").html(Mustache.render(subtitleTemplate, {dateString: dateString, events: events}));
 }
 
 addTimeChart();
